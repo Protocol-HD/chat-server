@@ -20,22 +20,22 @@ export class EventsGateway {
     private logger: Logger = new Logger('EventsGateway');
 
     @SubscribeMessage('ClientToServer')
-    handleEvent(@MessageBody() data: {room: string, message: string}, @ConnectedSocket() client: Socket,): void {
-        this.server.in(data.room).emit('ServerToClient', data.message);
+    handleEvent(@MessageBody() data: {room: string, message: string}): void {
+        this.server.to(data.room).emit('ServerToClient', data.message);
     }
 
-    @SubscribeMessage('createRoom')
-    createRoom(@MessageBody() data: string, @ConnectedSocket() client: Socket,): void {
+    @SubscribeMessage('joinRoom')
+    createRoom(@MessageBody() data: string, @ConnectedSocket() client: Socket): void {
         client.join(data);
-        this.logger.log(`create room ${data}`);
+        this.logger.log(`join room ${data}`);
     }
 
     @SubscribeMessage('leaveRoom')
-    leaveRoom(@MessageBody() data: string, @ConnectedSocket() client: Socket,): void {
+    leaveRoom(@MessageBody() data: string, @ConnectedSocket() client: Socket): void {
         client.leave(data);
         this.logger.log(`leave room ${data}`);
     }
-    
+
     afterInit(server: Server) {
         this.logger.log('Init');
     }
