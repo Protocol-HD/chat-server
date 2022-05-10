@@ -22,7 +22,7 @@ export class EventsGateway {
     @SubscribeMessage('ClientToServer')
     handleEvent(@MessageBody() data: {room: string, message: string}): void {
         this.server.to(data.room).emit('ServerToClient', data.message);
-        this.logger.log(`${data}`);
+        this.logger.log(`${data.room} ${data.message}`);
     }
 
     @SubscribeMessage('joinRoom')
